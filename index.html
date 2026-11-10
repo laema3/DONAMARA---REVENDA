@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>DONAMARA - REVENDA - Cardápio Digital e Quiosque</title>
+    
+    <!-- Meta Tags para Compartilhamento (WhatsApp, Facebook, Telegram, Instagram) -->
+    <meta name="description" content="Salgados fresquinhos para festa e revenda. Peça pelo nosso cardápio digital oficial." />
+    
+    <!-- Open Graph / WhatsApp / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="DONAMARA - REVENDA" />
+    <meta property="og:title" content="DONAMARA - REVENDA | Cardápio Digital" />
+    <meta property="og:description" content="Salgados fresquinhos para festa e revenda. Peça pelo nosso cardápio digital oficial." />
+    <meta property="og:image" content="/icon-512.png" />
+    <meta property="og:image:secure_url" content="/icon-512.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="DONAMARA - REVENDA" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DONAMARA - REVENDA | Cardápio Digital" />
+    <meta name="twitter:description" content="Salgados fresquinhos para festa e revenda. Peça pelo nosso cardápio digital oficial." />
+    <meta name="twitter:image" content="/icon-512.png" />
+    
+    <!-- Icons & PWA -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="shortcut icon" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+    <link id="manifest-link" rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DONAMARA" />
+    <meta name="application-name" content="DONAMARA - REVENDA" />
+    <meta name="theme-color" content="#78350f" />
+    <script>
+      (function() {
+        try {
+          var p = (window.location.pathname || '').toLowerCase();
+          var s = (window.location.search || '').toLowerCase();
+          var m = document.getElementById('manifest-link');
+          var appTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+          var appName = document.querySelector('meta[name="application-name"]');
+          var themeColor = document.querySelector('meta[name="theme-color"]');
+
+          if (p.startsWith('/tv') || s.includes('tv')) {
+            if (m) m.setAttribute('href', '/manifest-tv.json');
+            if (appTitle) appTitle.setAttribute('content', 'Smart TV DONAMARA');
+            if (appName) appName.setAttribute('content', 'Smart TV DONAMARA');
+            if (themeColor) themeColor.setAttribute('content', '#0c0a09');
+          } else if (p.startsWith('/totem') || p.startsWith('/kiosk') || s.includes('totem') || s.includes('kiosk')) {
+            if (m) m.setAttribute('href', '/manifest-totem.json');
+            if (appTitle) appTitle.setAttribute('content', 'Totem DONAMARA');
+            if (appName) appName.setAttribute('content', 'Totem DONAMARA');
+            if (themeColor) themeColor.setAttribute('content', '#0c0a09');
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+  </head>
+  <body class="bg-[#f8f7f5] text-stone-900 antialiased min-h-screen">
+    <div id="root">
+      <div id="initial-loader" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f8f7f5;color:#1c1917;font-family:system-ui,-apple-system,sans-serif;text-align:center;padding:20px;">
+        <div style="width:72px;height:72px;border-radius:20px;background:#ea580c;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 10px 25px rgba(234,88,12,0.25);">
+          <span style="font-size:36px;">🥟</span>
+        </div>
+        <h2 style="font-size:22px;font-weight:800;color:#1c1917;margin:0 0 8px 0;letter-spacing:-0.5px;">DONAMARA - REVENDA</h2>
+        <p style="font-size:14px;color:#78716c;margin:0 0 24px 0;">Carregando cardápio digital...</p>
+        <div style="width:36px;height:36px;border:3px solid rgba(234,88,12,0.2);border-top-color:#ea580c;border-radius:50%;animation:pwa-spin 1s linear infinite;"></div>
+        <style>
+          @keyframes pwa-spin { to { transform: rotate(360deg); } }
+        </style>
+      </div>
+    </div>
+    <script>
+      // Global fallback in case of syntax or runtime error in legacy webview
+      window.addEventListener('error', function(e) {
+        console.error('[App Global Error]', e.message, e.filename, e.lineno);
+      });
+      (function() {
+        try {
+          var isStandalone = 
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.matchMedia('(display-mode: fullscreen)').matches ||
+            window.matchMedia('(display-mode: minimal-ui)').matches ||
+            (window.navigator && window.navigator.standalone === true) ||
+            document.referrer.indexOf('android-app://') !== -1 ||
+            window.location.search.indexOf('source=pwa') !== -1 ||
+            window.location.search.indexOf('source=totem_pwa') !== -1 ||
+            window.location.search.indexOf('source=homescreen') !== -1;
+            
+          if (isStandalone) {
+            localStorage.setItem('pwa_app_installed', 'true');
+            localStorage.setItem('pwa_installed_permanent', 'true');
+          }
+        } catch(e) {}
+      })();
+
+      window.__deferredPrompt = null;
+      window.addEventListener('beforeinstallprompt', function(e) {
+        e.preventDefault();
+        window.__deferredPrompt = e;
+        window.dispatchEvent(new CustomEvent('pwa-deferred-prompt-ready', { detail: e }));
+      });
+      window.addEventListener('appinstalled', function() {
+        try {
+          localStorage.setItem('pwa_app_installed', 'true');
+          localStorage.setItem('pwa_installed_permanent', 'true');
+        } catch(e) {}
+      });
+
+      // Gerenciamento de ServiceWorker:
+      // Em desenvolvimento (localhost ou preview iframe), desregistra qualquer ServiceWorker
+      // ativo e esvazia caches do navegador para evitar telas pretas ou assets desatualizados.
+      var isDev = window.location.hostname === 'localhost' || 
+                  window.location.hostname === '127.0.0.1' || 
+                  window.location.hostname.indexOf('ais-dev') !== -1 ||
+                  window.location.hostname.indexOf('run.app') !== -1 ||
+                  (window.self !== window.top);
+
+      if ('serviceWorker' in navigator) {
+        if (isDev) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for (var reg of registrations) {
+              reg.unregister();
+              console.log('[Dev] ServiceWorker desregistrado para desenvolvimento:', reg.scope);
+            }
+          });
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              for (var name of names) {
+                caches.delete(name);
+              }
+            });
+          }
+        } else {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/sw.js').then(function(reg) {
+              console.log('[PWA] ServiceWorker registered with scope:', reg.scope);
+            }).catch(function(err) {
+              console.log('[PWA] ServiceWorker registration failed:', err);
+            });
+          });
+        }
+      }
+
+      // Fallback de segurança caso a inicialização demore mais de 8 segundos
+      setTimeout(function() {
+        var loader = document.getElementById('initial-loader');
+        if (loader && !document.getElementById('reload-btn')) {
+          var retryBox = document.createElement('div');
+          retryBox.style = 'margin-top:24px;text-align:center;';
+          retryBox.innerHTML = '<p style="font-size:13px;color:#78716c;margin-bottom:8px;">Demorando para iniciar?</p>' +
+            '<button id="reload-btn" onclick="window.location.reload(true)" style="padding:10px 20px;background:#ea580c;color:#ffffff;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-size:14px;box-shadow:0 4px 12px rgba(234,88,12,0.3);">Recarregar Aplicativo</button>';
+          loader.appendChild(retryBox);
+        }
+      }, 8000);
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

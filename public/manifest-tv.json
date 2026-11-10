@@ -1,0 +1,64 @@
+{
+  "short_name": "TV Mídia",
+  "name": "Smart TV & Painel de Mídia - DONAMARA",
+  "description": "Painel de TV Indoor, menu digital e exibição contínua de vídeos para TV Box - DONAMARA",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "id": "/tv",
+  "start_url": "/tv?source=tvbox_pwa",
+  "scope": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "prefer_related_applications": false,
+  "categories": ["business", "entertainment", "food"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Painel Smart TV DONAMARA em Alta Definição"
+    },
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Menu da TV Box DONAMARA"
+    }
+  ]
+}

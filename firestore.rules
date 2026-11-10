@@ -1,0 +1,186 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Fields:
+    //   - name: string (required)
+    //   - email: string (required)
+    //   - role: string (admin, operator) (required)
+    //
+    // Collection: categories
+    // Fields:
+    //   - name: string (required)
+    //   - order: number (required)
+    //
+    // Collection: products
+    // Fields:
+    //   - categoryId: string (required)
+    //   - name: string (required)
+    //   - description: string (required)
+    //   - price: number (required)
+    //   - imageUrl: string (required)
+    //   - isActive: boolean (required)
+    //
+    // Collection: orders
+    // Fields:
+    //   - items: string (JSON stringified) (required)
+    //   - total: number (required)
+    //   - status: string (pending, preparing, ready, completed) (required)
+    //   - createdAt: number (required)
+    //   - type: string (kiosk, delivery) (required)
+    //   - paymentMethod: string (required)
+    //
+    // Collection: storeInfo
+    // Document: main
+    // Fields:
+    //   - name: string (required)
+    //   - themeColor: string (required)
+    //   - iconColor: string (required)
+    //   - headerPhrase: string (required)
+    //   - logoUrl: string (required)
+    //   - address: string (required)
+    //   - hours: string (required)
+    //   - instagram: string (required)
+    //   - whatsapp: string (required)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        // Check by email (Primary Admin)
+        (request.auth.token.email.lower() == "camillasites@gmail.com") ||
+        // Check by Firestore document role
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+    
+    function isOperator() {
+      return isAuthenticated() && (
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'operator'
+      );
+    }
+    
+    function hasAccess() {
+      return isAdmin() || isOperator();
+    }
+
+    function hasAllAllowedFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function isValidUser() {
+      return hasAllAllowedFields(['name', 'email', 'role']) &&
+             request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() < 100 &&
+             request.resource.data.email is string && request.resource.data.email.size() > 0 && request.resource.data.email.size() < 100 &&
+             request.resource.data.role in ['admin', 'operator'];
+    }
+
+    // Domain Validators
+    function isValidCategory() {
+      let allowedFields = ['name', 'order', 'externalId', 'isVisible'];
+      return request.resource.data.keys().hasAll(['name', 'order']) &&
+             request.resource.data.keys().hasOnly(allowedFields) &&
+             request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() < 100 &&
+             request.resource.data.order is number &&
+             (!('externalId' in request.resource.data) || (request.resource.data.externalId is string)) &&
+             (!('isVisible' in request.resource.data) || (request.resource.data.isVisible is bool));
+    }
+
+    function isValidProduct() {
+      let allowedFields = ['id', 'categoryId', 'name', 'price', 'isActive', 'imageUrl', 'description', 'isAddon', 'isFlavor', 'addonIds', 'maxAddons', 'flavorIds', 'createdAt', 'updatedAt', 'order', 'externalId'];
+      return request.resource.data.keys().hasAny(['categoryId', 'name', 'price', 'isActive']) &&
+             request.resource.data.keys().hasOnly(allowedFields) &&
+             (!('categoryId' in request.resource.data) || (request.resource.data.categoryId is string && request.resource.data.categoryId.size() > 0)) &&
+             (!('name' in request.resource.data) || (request.resource.data.name is string && request.resource.data.name.size() > 0 && request.resource.data.name.size() < 150)) &&
+             (!('price' in request.resource.data) || (request.resource.data.price is number && request.resource.data.price >= 0)) &&
+             (!('isActive' in request.resource.data) || (request.resource.data.isActive is bool)) &&
+             (!('imageUrl' in request.resource.data) || request.resource.data.imageUrl == null || (request.resource.data.imageUrl is string)) &&
+             (!('description' in request.resource.data) || request.resource.data.description == null || (request.resource.data.description is string)) &&
+             (!('isAddon' in request.resource.data) || (request.resource.data.isAddon is bool)) &&
+             (!('isFlavor' in request.resource.data) || (request.resource.data.isFlavor is bool)) &&
+             (!('addonIds' in request.resource.data) || (request.resource.data.addonIds is list)) &&
+             (!('maxAddons' in request.resource.data) || (request.resource.data.maxAddons is number)) &&
+             (!('flavorIds' in request.resource.data) || (request.resource.data.flavorIds is list));
+    }
+
+    function isValidOrder() {
+      let allowedFields = ['items', 'total', 'status', 'createdAt', 'type', 'paymentMethod', 'customerName', 'customerPhone', 'deliveryType', 'deliveryAddress'];
+      return request.resource.data.keys().hasAll(['items', 'total', 'status', 'createdAt', 'type', 'paymentMethod']) &&
+             request.resource.data.keys().hasOnly(allowedFields) &&
+             request.resource.data.items is string && request.resource.data.items.size() < 10000 &&
+             request.resource.data.total is number &&
+             request.resource.data.status in ['pending', 'preparing', 'ready', 'completed', 'cancelled'] &&
+             request.resource.data.createdAt is number &&
+             request.resource.data.type in ['kiosk', 'delivery', 'online'] &&
+             (!('customerName' in request.resource.data) || (request.resource.data.customerName is string && request.resource.data.customerName.size() < 100)) &&
+             (!('customerPhone' in request.resource.data) || (request.resource.data.customerPhone is string && request.resource.data.customerPhone.size() < 30));
+    }
+
+    function isValidStoreInfo() {
+      return request.resource.data.keys().hasAll(['name', 'themeColor', 'iconColor', 'headerPhrase', 'logoUrl', 'address', 'hours', 'instagram', 'whatsapp']) &&
+             request.resource.data.name is string && request.resource.data.name.size() < 100 &&
+             request.resource.data.themeColor is string && request.resource.data.themeColor.size() < 20 &&
+             request.resource.data.iconColor is string && request.resource.data.iconColor.size() < 20;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || hasAccess());
+      allow create: if isAdmin() && isValidUser();
+      allow update: if isAdmin() && isValidUser();
+      allow delete: if isAdmin();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create: if hasAccess() && isValidCategory();
+      allow update: if hasAccess() && isValidCategory();
+      allow delete: if hasAccess();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if hasAccess() && isValidProduct();
+      allow update: if hasAccess() && isValidProduct();
+      allow delete: if hasAccess();
+    }
+
+    match /orders/{orderId} {
+      allow read: if hasAccess();
+      allow create: if isValidOrder();
+      allow update: if hasAccess() && isValidOrder();
+      allow delete: if isAdmin();
+    }
+
+    match /storeInfo/{documentId} {
+      allow read: if true;
+      allow create: if isAdmin() && isValidStoreInfo();
+      allow update: if isAdmin() && isValidStoreInfo();
+      allow delete: if isAdmin();
+    }
+
+    // Tenant support
+    match /tenants/{tenantId}/{collection}/{document=**} {
+      allow read: if true; // Ajustar conforme necessário, mas pelo menos permitir a leitura base
+      allow write: if hasAccess(); // Admin/Operator pode escrever em qualquer tenant
+    }
+  }
+}

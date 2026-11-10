@@ -1,0 +1,29 @@
+[
+  {
+    "id": "owner-1",
+    "email": "camillasites@gmail.com",
+    "name": "Administrador Principal",
+    "role": "owner",
+    "permissions": [
+      "all"
+    ],
+    "createdAt": "2026-11-10T21:45:26.551Z"
+  },
+  {
+    "id": "admin-1",
+    "email": "admin@donamara.com.br",
+    "name": "Admin Dona Mara",
+    "role": "admin",
+    "permissions": [
+      "orders",
+      "products",
+      "categories",
+      "customers",
+      "drivers",
+      "tables",
+      "tv",
+      "settings"
+    ],
+    "createdAt": "2026-11-10T21:45:26.551Z"
+  }
+]

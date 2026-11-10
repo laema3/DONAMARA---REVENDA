@@ -1,0 +1,57 @@
+{
+  "short_name": "Motoboy DONAMARA",
+  "name": "Portal do Motoboy - DONAMARA",
+  "description": "Aplicativo para entrega de pedidos e controle de rotas do motoboy - DONAMARA",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "id": "/motoboy",
+  "start_url": "/motoboy?source=motoboy_pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c0a09",
+  "theme_color": "#f97316",
+  "prefer_related_applications": false,
+  "categories": ["business", "food", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-narrow.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Portal do Motoboy DONAMARA"
+    }
+  ]
+}

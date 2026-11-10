@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bebas+Neue&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Bebas Neue", sans-serif;
+  --font-slab: "Alfa Slab One", serif;
+  --font-serif: "Lora", serif;
+}
+
+/* =========================================================================
+   Typography & Device-Specific Font-Size Scaling:
+   - Desktop (PC/Notebook): Mantém a proporção padrão original (105%)
+   - Smartphone (Clientes fazendo pedidos no celular): +20% no tamanho da fonte (126%)
+   - Tablet / Totem (Autoatendimento e Atendimento Presencial): +20% no tamanho da fonte (126%)
+   ========================================================================= */
+
+/* Padrão Desktop com fonte aumentada para melhor legibilidade */
+:root, html {
+  font-size: 112.5%;
+}
+
+/* Smartphone: Aumento proporcional de escala para excelente legibilidade */
+@media screen and (max-width: 767px) {
+  :root, html {
+    font-size: 110%;
+    -webkit-text-size-adjust: 100%;
+  }
+}
+
+/* Tablet (Retrato e Paisagem): Aumento para Totem / Autoatendimento / Balcão */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  :root, html {
+    font-size: 130%;
+  }
+}
+
+/* Tablets touch em modo paisagem (até 1280px) */
+@media screen and (min-width: 768px) and (max-width: 1280px) and (pointer: coarse) {
+  :root, html {
+    font-size: 126%;
+  }
+}
+
+/* Modo Totem / Autoatendimento presencial (em qualquer resolução) */
+html.totem-mode,
+body.totem-mode,
+.totem-mode,
+.is-totem,
+[data-totem="true"] {
+  font-size: 126% !important;
+}
+
+/* =========================================================================
+   Custom Scrollbar Styles (Visible & Draggable Lateral Scroll Cursor)
+   ========================================================================= */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #f97316 #f5f5f4;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f5f5f4;
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ea580c;
+  border-radius: 8px;
+  border: 2px solid #f5f5f4;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #c2410c;
+}
+
+/* =========================================================================
+   Leaflet Map Styling & Tracking Pins
+   ========================================================================= */
+@import "leaflet/dist/leaflet.css";
+
+.tracking-pin-pulse {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tracking-pin-pulse::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  background-color: rgba(16, 185, 129, 0.4);
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  z-index: -1;
+}
+
+/* =========================================================================
+   Print to PDF Rules (Documentação & Relatórios)
+   ========================================================================= */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+  
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+

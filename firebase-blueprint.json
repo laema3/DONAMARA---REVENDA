@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System users (Admin/Operator)",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "format": "email", "description": "Email address" },
+        "role": { "type": "string", "enum": ["admin", "operator"], "description": "User role" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Product categories",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Category name" },
+        "order": { "type": "integer", "description": "Display order" }
+      },
+      "required": ["name", "order"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Bakery products",
+      "type": "object",
+      "properties": {
+        "categoryId": { "type": "string", "description": "ID of the category" },
+        "name": { "type": "string", "description": "Product name" },
+        "description": { "type": "string", "description": "Product description" },
+        "price": { "type": "number", "description": "Product price" },
+        "imageUrl": { "type": "string", "format": "uri", "description": "Product image URL" },
+        "isActive": { "type": "boolean", "description": "Whether the product is active" },
+        "isAddon": { "type": "boolean", "description": "Whether the product is an addon" },
+        "isFlavor": { "type": "boolean", "description": "Whether the product is a flavor" },
+        "addonIds": { "type": "array", "items": { "type": "string" }, "description": "IDs of allowed addons" }
+      },
+      "required": ["categoryId", "name", "price", "isActive"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer orders",
+      "type": "object",
+      "properties": {
+        "items": { "type": "string", "description": "JSON stringified order items" },
+        "total": { "type": "number", "description": "Total order amount" },
+        "status": { "type": "string", "enum": ["pending", "preparing", "ready", "completed", "cancelled"], "description": "Order status" },
+        "createdAt": { "type": "integer", "description": "Timestamp of order creation" },
+        "type": { "type": "string", "enum": ["kiosk", "delivery", "online"], "description": "Order type" },
+        "paymentMethod": { "type": "string", "description": "Payment method used" },
+        "customerName": { "type": "string", "description": "Name of the customer" },
+        "customerPhone": { "type": "string", "description": "WhatsApp/Phone of the customer" }
+      },
+      "required": ["items", "total", "status", "createdAt", "type", "paymentMethod"]
+    },
+    "StoreInfo": {
+      "title": "StoreInfo",
+      "description": "Bakery configuration and branding",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Bakery name" },
+        "themeColor": { "type": "string", "description": "Primary theme color" },
+        "iconColor": { "type": "string", "description": "Icon color" },
+        "headerPhrase": { "type": "string", "description": "Header phrase" },
+        "logoUrl": { "type": "string", "format": "uri", "description": "Logo image URL" },
+        "address": { "type": "string", "description": "Bakery address" },
+        "hours": { "type": "string", "description": "Opening hours" },
+        "instagram": { "type": "string", "description": "Instagram handle" },
+        "whatsapp": { "type": "string", "description": "WhatsApp number" }
+      },
+      "required": ["name", "themeColor", "iconColor", "headerPhrase", "logoUrl", "address", "hours", "instagram", "whatsapp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "System users" },
+    "/categories/{categoryId}": { "schema": "Category", "description": "Product categories" },
+    "/products/{productId}": { "schema": "Product", "description": "Bakery products" },
+    "/orders/{orderId}": { "schema": "Order", "description": "Customer orders" },
+    "/storeInfo/main": { "schema": "StoreInfo", "description": "Store configuration" }
+  }
+}

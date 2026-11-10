@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documento de Entrega e Termo de Escopo - DONAMARA - REVENDA</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1e293b;
+      background-color: #f1f5f9;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #0f172a;
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    .toolbar h1 {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-download {
+      background: #ea580c;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+
+    .btn-download:hover {
+      background: #c2410c;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 80px auto 40px auto;
+      background: white;
+      padding: 48px 56px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .header-doc {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+    }
+
+    .header-doc .badge {
+      display: inline-block;
+      background: #ea580c;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .header-doc h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+      background: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      font-size: 13px;
+    }
+
+    .meta-grid strong {
+      color: #334155;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #e2e8f0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ea580c;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      font-size: 13.5px;
+      color: #334155;
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin-bottom: 12px;
+    }
+
+    ul li {
+      font-size: 13.5px;
+      color: #334155;
+      margin-bottom: 6px;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    ul li::before {
+      content: "▪";
+      color: #ea580c;
+      position: absolute;
+      left: 4px;
+      top: -1px;
+      font-size: 14px;
+    }
+
+    .highlight-box {
+      background: #fff7ed;
+      border-left: 4px solid #ea580c;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 6px 6px 0;
+      font-size: 13px;
+      color: #7c2d12;
+    }
+
+    .signatures {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px dashed #cbd5e1;
+      page-break-inside: avoid;
+    }
+
+    .sign-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 50px;
+    }
+
+    .sign-line {
+      border-top: 1px solid #475569;
+      text-align: center;
+      padding-top: 8px;
+      font-size: 13px;
+      color: #1e293b;
+    }
+
+    .sign-line small {
+      display: block;
+      color: #64748b;
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .toolbar {
+        display: none !important;
+      }
+      .container {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        max-width: 100%;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <h1>📄 Documento de Entrega do Sistema — DONAMARA - REVENDA</h1>
+    <button class="btn-download" onclick="window.print()">
+      🖨️ Salvar como PDF / Imprimir
+    </button>
+  </div>
+
+  <div class="container">
+    <div class="header-doc">
+      <span class="badge">Documento Oficial de Entrega de Software</span>
+      <h2>TERMO DE ESCOPO E ENTREGA TÉCNICA</h2>
+      
+      <div class="meta-grid">
+        <div><strong>Projeto:</strong> Sistema de Autoatendimento & Gestão de Pedidos</div>
+        <div><strong>Data de Entrega:</strong> 22 de Agosto de 2026</div>
+        <div><strong>Responsável Técnico:</strong> Camilla Sites</div>
+        <div><strong>Contratante / Estabelecimento:</strong> DONAMARA - REVENDA</div>
+      </div>
+    </div>
+
+    <h3>1. Objetivo do Documento</h3>
+    <p>
+      Este documento formaliza a conclusão e entrega do sistema personalizado desenvolvido para o estabelecimento <strong>DONAMARA - REVENDA</strong>, detalhando todas as funcionalidades ativas, módulos implementados e as condições contratuais acordadas para suporte, manutenções futuras e novos desenvolvimentos.
+    </p>
+
+    <h3>2. Módulos e Funcionalidades Entregues</h3>
+    
+    <h4>2.1. Totem de Autoatendimento (Tablet / Kiosk)</h4>
+    <ul>
+      <li><strong>Cardápio Digital Interativo:</strong> Navegação ágil por categorias com busca instantânea e fotos ilustrativas.</li>
+      <li><strong>Personalização Completa:</strong> Escolha de complementos, adicionais e observações personalizadas por produto.</li>
+      <li><strong>Identificação e Geração de Senhas:</strong> Identificação simplificada (Nome e Telefone) e geração de senha sequencial diária.</li>
+      <li><strong>Impressão Térmica Direta (Rede/Ethernet):</strong> Envio direto para impressora térmica (ex: Epson TM-T20X) sem telas intermediárias e com retorno instantâneo à tela inicial para o próximo cliente.</li>
+      <li><strong>Cupom de Alto Contraste:</strong> Destaque com bloco sólido preto e texto branco para identificação rápida do cliente e número do pedido.</li>
+    </ul>
+
+    <h4>2.2. Balcão, Mesas e Caixa</h4>
+    <ul>
+      <li>Lançamento rápido de pedidos avulsos, de balcão e de mesas.</li>
+      <li>Monitoramento em tempo real do status de preparação e entrega.</li>
+    </ul>
+
+    <h4>2.3. Painel Administrativo e Gestão (Retaguarda)</h4>
+    <ul>
+      <li><strong>Cardápio e Preços:</strong> Cadastro, edição, ativação/pausa de itens, fotos e categorias.</li>
+      <li><strong>Gestão de Pedidos (KDS):</strong> Acompanhamento Kanban em tempo real (Pendentes, Em Preparo, Prontos, Finalizados).</li>
+      <li><strong>Histórico e Métricas:</strong> Relatório de faturamento, volume de pedidos e exportação de dados.</li>
+      <li><strong>Níveis de Acesso:</strong> Perfis protegidos por senha para Administrador, Caixa e Cozinha.</li>
+    </ul>
+
+    <h4>2.4. Integração BlueFocus ERP</h4>
+    <ul>
+      <li><strong>Sincronização Programada Automática (a cada 2 horas):</strong>
+        <br>• Segunda a Sexta-feira: das 08:00 às 18:00.
+        <br>• Sábados: das 08:00 às 12:00.
+        <br>• Domingos: Sem sincronização automática.
+      </li>
+      <li><strong>Sincronização Manual:</strong> Botão de atualização imediata para ajustes urgentes de estoque e preços.</li>
+    </ul>
+
+    <h4>2.5. Central de Notificações</h4>
+    <ul>
+      <li>Alertas visuais e sonoros instantâneos de novos pedidos via canal NTFY para celulares ou tela da cozinha.</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <h3>3. Termo de Escopo, Garantia e Manutenções Avulsas</h3>
+    <p>
+      O sistema é entregue em modalidade de <strong>desenvolvimento sob demanda com escopo fechado ("As-Is")</strong>, operando sem cobrança de taxas de assinatura mensal ou mensalidades fixas.
+    </p>
+
+    <div class="highlight-box">
+      <strong>Regras Comerciais e de Manutenção:</strong>
+      <br>1. <strong>Garantia de 30 Dias:</strong> Cobertura gratuita para correção de eventuais inconsistências ou falhas técnicas (bugs) das funções entregues neste escopo.
+      <br>2. <strong>Alterações e Novas Funcionalidades:</strong> Quaisquer novas solicitações (novos relatórios, alterações de layout, novos meios de pagamento, novas integrações de hardware ou sistemas) serão orçadas e cobradas à parte mediante aprovação prévia.
+      <br>3. <strong>Infraestrutura:</strong> Custos de servidores de terceiros, links de internet ou substituição de hardware são de responsabilidade do contratante.
+    </div>
+
+    <div class="signatures">
+      <p style="text-align: center; margin-bottom: 20px;">
+        As partes declaram estar de acordo com o escopo entregue e as condições acima estabelecidas.
+      </p>
+
+      <p style="text-align: center; font-size: 13px; color: #64748b;">
+        Local e Data: __________________________, _____ de _________________ de 2026.
+      </p>
+
+      <div class="sign-grid">
+        <div class="sign-line">
+          <strong>DONAMARA - REVENDA</strong>
+          <small>Contratante / Proprietário</small>
+        </div>
+        <div class="sign-line">
+          <strong>CAMILLA SITES</strong>
+          <small>Responsável Técnico / Desenvolvimento</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Atalho automático para abrir o diálogo de impressão/salvar em PDF ao carregar se passado parâmetro ?print=true
+    if (window.location.search.includes('print=true')) {
+      window.addEventListener('load', () => setTimeout(() => window.print(), 300));
+    }
+  </script>
+</body>
+</html>
