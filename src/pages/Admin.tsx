@@ -8693,7 +8693,7 @@ export default function Admin() {
               <UserCheck className="w-5 h-5" /> Clientes & Leads
             </button>
           )}
-          {/* {(isAdminOrMaster || isCaixaUser) && (
+          {(isAdminOrMaster || isCaixaUser) && (
             <button type="button" 
               onClick={() => {
                 setActiveTab('tables');
@@ -8703,9 +8703,8 @@ export default function Admin() {
             >
               <UtensilsCrossed className="w-5 h-5" /> Mesas & QR Codes
             </button>
-          )} */}
-          {/* ... (comment out Customers, Drivers tabs similarly) */}
-          {/* {(isAdminOrMaster || isCaixaUser) && (
+          )}
+          {(isAdminOrMaster || isCaixaUser) && (
             <button type="button" 
               onClick={() => {
                 setActiveTab('drivers');
@@ -8726,7 +8725,7 @@ export default function Admin() {
             >
               <MapPin className="w-5 h-5" /> Bairros & Taxas (CEP)
             </button>
-          )} */}
+          )}
           {!isCaixaUser && (
             <button type="button" 
               onClick={() => {
