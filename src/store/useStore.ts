@@ -473,7 +473,7 @@ export const defaultStoreInfo: StoreInfo = {
   instagram: '',
   whatsapp: '',
   categoryTitleColor: '#dc2626',
-  deliveryEnabled: false,
+  deliveryEnabled: true,
   inStoreEnabled: true,
   kioskEnabled: false,
   requireQrCodeForOrdering: false,
@@ -546,7 +546,7 @@ const getInitialStoreInfo = (): StoreInfo => {
         };
       }
     }
-    info.deliveryEnabled = false;
+    info.deliveryEnabled = true;
     info.kioskEnabled = false;
     info.requireQrCodeForOrdering = false;
 
@@ -811,7 +811,7 @@ export const useStore = create<StoreState>((set, get) => ({
                   ...defaultStoreInfo,
                   ...local,
                   ...storeInfo,
-                  deliveryEnabled: false,
+                  deliveryEnabled: true,
                   kioskEnabled: false,
                   requireQrCodeForOrdering: false,
                 };
@@ -1622,10 +1622,10 @@ export const useStore = create<StoreState>((set, get) => ({
   },
   
   updateStoreInfo: async (info) => {
-    const normalizedInfo = { ...info, deliveryEnabled: false };
+    const normalizedInfo = { ...info, deliveryEnabled: true };
     // Optimistic update
     set(state => {
-      const merged = { ...state.storeInfo, ...normalizedInfo, deliveryEnabled: false };
+      const merged = { ...state.storeInfo, ...normalizedInfo, deliveryEnabled: true };
       saveStoreInfoToStorage(merged);
       return { storeInfo: merged };
     });
@@ -1639,7 +1639,7 @@ export const useStore = create<StoreState>((set, get) => ({
         const updated = await res.json();
         set(state => {
           const local = state.storeInfo;
-          const merged = { ...local, ...updated, deliveryEnabled: false };
+          const merged = { ...local, ...updated, deliveryEnabled: true };
 
           const customLogo = localStorage.getItem('donamara_custom_logo_url') || local.logoUrl;
           if (customLogo && customLogo !== '/logo.svg' && customLogo.trim() !== '') {

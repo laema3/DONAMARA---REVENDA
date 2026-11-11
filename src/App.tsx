@@ -208,7 +208,7 @@ export default function App() {
               <Route path="/cardapio" element={<Menu />} />
               <Route path="/menu" element={<Menu />} />
               <Route path="/admin" element={<Admin />} />
-              {/* <Route path="/motoboy" element={<MotoboyRoute />} /> */}
+              <Route path="/motoboy" element={<MotoboyRoute />} />
               <Route path="/tv" element={<TvDisplay />} />
               <Route path="/privacidade" element={<PrivacyPolicy />} />
               <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
