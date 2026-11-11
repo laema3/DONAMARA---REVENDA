@@ -6834,7 +6834,7 @@ export default function Menu() {
           className="bg-white border-b border-stone-200 shrink-0 z-20 overflow-x-auto no-scrollbar scroll-smooth shadow-xs py-1.5 sm:py-2 px-2.5 sm:px-6"
         >
           <div className="flex gap-2 sm:gap-3 items-center relative max-w-4xl lg:max-w-7xl mx-auto">
-            {availableCategories.map(cat => {
+            {(Array.isArray(availableCategories) ? availableCategories : []).map(cat => {
               const count = categoryCountMap[cat.id] || 0;
               return (
                 <button
@@ -6879,7 +6879,7 @@ export default function Menu() {
                 </button>
               </div>
             ) : (
-              displayedCategories.map(category => {
+              (Array.isArray(displayedCategories) ? displayedCategories : []).map(category => {
                 const categoryProducts = productsByCategory[category.id] || [];
                 if (categoryProducts.length === 0) return null;
 
@@ -6897,7 +6897,7 @@ export default function Menu() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
-                      {categoryProducts.map(product => (
+                      {(Array.isArray(categoryProducts) ? categoryProducts : []).map(product => (
                         <div 
                           key={product.id} 
                           className="bg-white rounded-2xl sm:rounded-3xl border border-stone-200/90 p-3 sm:p-5 md:p-6 lg:p-5 flex gap-3 sm:gap-6 lg:gap-4 hover:shadow-xl hover:shadow-stone-200/50 transition-all group items-center"
@@ -7532,7 +7532,7 @@ export default function Menu() {
                     )}
                   </div>
                   <div className="space-y-2">
-                    {availableFlavors.map(flavor => {
+                    {(Array.isArray(availableFlavors) ? availableFlavors : []).map(flavor => {
                       const flavorCode = (flavor.externalId || (flavor as any).code || '').toString().trim();
                       return (
                       <label 
@@ -7591,7 +7591,7 @@ export default function Menu() {
                   </div>
 
                   <div className="space-y-2 max-h-[35vh] overflow-y-auto pr-1">
-                    {availableAddons.map(addon => {
+                    {(Array.isArray(availableAddons) ? availableAddons : []).map(addon => {
                       const addonCode = (addon.externalId || (addon as any).code || '').toString().trim();
                       const isSelected = addonModal.selectedAddons.some(a => a.productId === addon.id);
                       const isMaxReached = addonModal.selectedAddons.length >= maxAddons;
