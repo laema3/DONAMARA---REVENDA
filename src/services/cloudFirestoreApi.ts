@@ -190,11 +190,91 @@ async function calculateCustomerMonthSpent(cust: any): Promise<number> {
   }
 }
 
+async function migrateLocalDataToFirestoreOnce() {
+  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
+  try {
+    // 1. Store Info & Custom Logo
+    const storeSnap = await getDoc(doc(db, COLLECTIONS.STORE_INFO, 'main'));
+    const rawStore = localStorage.getItem('donamara_store_info');
+    const customLogo = localStorage.getItem('donamara_custom_logo_url');
+    if (!storeSnap.exists() && (rawStore || customLogo)) {
+      let localInfo: any = {};
+      if (rawStore) {
+        try { localInfo = JSON.parse(rawStore); } catch {}
+      }
+      if (customLogo && !customLogo.toLowerCase().includes('balbec')) {
+        localInfo.logoUrl = customLogo;
+      }
+      const cleanInfo = await sanitizeForFirestore({
+        ...defaultStoreInfo,
+        ...localInfo,
+        updatedAt: Date.now(),
+      });
+      await setDoc(doc(db, COLLECTIONS.STORE_INFO, 'main'), cleanInfo, { merge: true });
+    }
+
+    // 2. Local Customers -> Cloud Firestore
+    const rawCust1 = localStorage.getItem('donamara_cached_customers_v1');
+    const rawCust2 = localStorage.getItem('donamara_local_customers');
+    const localCusts: any[] = [];
+    if (rawCust1) { try { const p = JSON.parse(rawCust1); if (Array.isArray(p)) localCusts.push(...p); } catch {} }
+    if (rawCust2) { try { const p = JSON.parse(rawCust2); if (Array.isArray(p)) localCusts.push(...p); } catch {} }
+    if (localCusts.length > 0) {
+      const cloudCusts = await getCollectionList(COLLECTIONS.CUSTOMERS);
+      const cloudIds = new Set(cloudCusts.map((c: any) => String(c.id)));
+      const cloudCpfs = new Set(cloudCusts.map((c: any) => String(c.cpf || '').replace(/\D/g, '')).filter(Boolean));
+      const batch = writeBatch(db);
+      let hasNewCust = false;
+      for (const c of localCusts) {
+        if (!c || !c.name) continue;
+        const id = String(c.id || `cust_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`);
+        const cleanCpf = String(c.cpf || '').replace(/\D/g, '');
+        if (!cloudIds.has(id) && (!cleanCpf || !cloudCpfs.has(cleanCpf))) {
+          const clean = await sanitizeForFirestore(normalizeCustomer({ ...c, id }));
+          batch.set(doc(db, COLLECTIONS.CUSTOMERS, id), clean, { merge: true });
+          cloudIds.add(id);
+          if (cleanCpf) cloudCpfs.add(cleanCpf);
+          hasNewCust = true;
+        }
+      }
+      if (hasNewCust) await batch.commit();
+    }
+
+    // 3. Local Orders -> Cloud Firestore
+    const rawOrd1 = localStorage.getItem('donamara_cached_orders_v1');
+    const rawOrd2 = localStorage.getItem('donamara_orders');
+    const localOrds: any[] = [];
+    if (rawOrd1) { try { const p = JSON.parse(rawOrd1); if (Array.isArray(p)) localOrds.push(...p); } catch {} }
+    if (rawOrd2) { try { const p = JSON.parse(rawOrd2); if (Array.isArray(p)) localOrds.push(...p); } catch {} }
+    if (localOrds.length > 0) {
+      const cloudOrds = await getCollectionList(COLLECTIONS.ORDERS);
+      const cloudIds = new Set(cloudOrds.map((o: any) => String(o.id)));
+      const batch = writeBatch(db);
+      let hasNewOrd = false;
+      for (const o of localOrds) {
+        if (!o || !o.id) continue;
+        const id = String(o.id);
+        if (!cloudIds.has(id)) {
+          const clean = await sanitizeForFirestore(normalizeOrder({ ...o, id }));
+          batch.set(doc(db, COLLECTIONS.ORDERS, id), clean, { merge: true });
+          cloudIds.add(id);
+          hasNewOrd = true;
+        }
+      }
+      if (hasNewOrd) await batch.commit();
+    }
+  } catch (err) {
+    console.warn('[Firestore Migration Warning]:', err);
+  }
+}
+
 // Real-time listeners so all computers/devices stay in instant sync
 let realtimeInitialized = false;
 export function startFirestoreRealtimeSync() {
   if (realtimeInitialized || typeof window === 'undefined') return;
   realtimeInitialized = true;
+
+  migrateLocalDataToFirestoreOnce().catch(() => {});
 
   try {
     // 1. Real-time Orders listener

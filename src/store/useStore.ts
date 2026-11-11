@@ -551,10 +551,10 @@ const getInitialStoreInfo = (): StoreInfo => {
     info.requireQrCodeForOrdering = false;
 
     const savedCustomLogo = localStorage.getItem('donamara_custom_logo_url');
-    if (savedCustomLogo && (savedCustomLogo.includes('balbec') || savedCustomLogo.startsWith('data:image/'))) {
+    if (savedCustomLogo && savedCustomLogo.toLowerCase().includes('balbec')) {
       localStorage.removeItem('donamara_custom_logo_url');
       info.logoUrl = '/logo.png';
-    } else if (savedCustomLogo && (!info.logoUrl || info.logoUrl === '/logo.svg')) {
+    } else if (savedCustomLogo && (!info.logoUrl || info.logoUrl === '/logo.svg' || info.logoUrl === '/logo.png')) {
       info.logoUrl = savedCustomLogo;
     }
     const savedTvCats = localStorage.getItem('donamara_tv_selected_categories');
@@ -903,13 +903,24 @@ export const useStore = create<StoreState>((set, get) => ({
           .then(safeParseResponse)
           .then(ordersData => {
             if (Array.isArray(ordersData)) {
-              const orders = ordersData.map((o: any) => ({
-                ...o,
-                status: o.status || ((o.type === 'delivery' || o.type === 'online' || o.deliveryType === 'delivery' || o.deliveryType === 'pickup') ? 'pending' : 'completed'),
-                items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items
-              }));
-              saveOrdersToStorage(orders);
-              set({ orders, ordersError: null });
+              if (ordersData.length > 0) {
+                const orders = ordersData.map((o: any) => ({
+                  ...o,
+                  status: o.status || ((o.type === 'delivery' || o.type === 'online' || o.deliveryType === 'delivery' || o.deliveryType === 'pickup') ? 'pending' : 'completed'),
+                  items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items
+                }));
+                saveOrdersToStorage(orders);
+                set({ orders, ordersError: null });
+              } else {
+                const localOrds = get().orders;
+                if (Array.isArray(localOrds) && localOrds.length > 0) {
+                  fetch('/api/db/orders/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(localOrds)
+                  }).catch(() => {});
+                }
+              }
             }
           })
           .catch(() => {
