@@ -6460,7 +6460,6 @@ export default function Admin() {
                         name="ntfyTopic" 
                         id="ntfyTopicInput"
                         defaultValue={storeInfo.ntfyTopic || 'donamara_pedidos'} 
-                        required 
                         className="w-full p-3 pl-20 border rounded-xl font-mono text-sm bg-white focus:ring-2 focus:ring-orange-500 outline-none" 
                         placeholder="donamara_pedidos"
                       />
