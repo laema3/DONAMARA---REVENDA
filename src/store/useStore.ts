@@ -551,7 +551,10 @@ const getInitialStoreInfo = (): StoreInfo => {
     info.requireQrCodeForOrdering = false;
 
     const savedCustomLogo = localStorage.getItem('donamara_custom_logo_url');
-    if (savedCustomLogo && (!info.logoUrl || info.logoUrl === '/logo.svg')) {
+    if (savedCustomLogo && (savedCustomLogo.includes('balbec') || savedCustomLogo.startsWith('data:image/'))) {
+      localStorage.removeItem('donamara_custom_logo_url');
+      info.logoUrl = '/logo.png';
+    } else if (savedCustomLogo && (!info.logoUrl || info.logoUrl === '/logo.svg')) {
       info.logoUrl = savedCustomLogo;
     }
     const savedTvCats = localStorage.getItem('donamara_tv_selected_categories');
