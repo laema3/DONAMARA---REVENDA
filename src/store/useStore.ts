@@ -1149,50 +1149,46 @@ export const useStore = create<StoreState>((set, get) => ({
   addCategory: async (category) => {
     const id = Math.random().toString(36).substring(2, 9);
     const newCat = { id, ...category };
+    set(state => {
+      const updated = [...state.categories, newCat];
+      saveCategoriesToStorage(updated);
+      return { categories: updated };
+    });
     try {
-      const res = await fetch('/api/db/categories', {
+      fetch('/api/db/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCat)
-      });
-      if (res.ok) {
-        const saved = await res.json();
-        set(state => ({ categories: [...state.categories, saved] }));
-      }
-    } catch (error) {
-      console.error('Error adding category:', error);
-    }
+      }).catch(() => {});
+    } catch (error) {}
   },
   
   updateCategory: async (id, category) => {
+    set(state => {
+      const updated = state.categories.map(c => c.id === id ? { ...c, ...category } : c);
+      saveCategoriesToStorage(updated);
+      return { categories: updated };
+    });
     try {
-      const res = await fetch(`/api/db/categories/${id}`, {
+      fetch(`/api/db/categories/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(category)
-      });
-      if (res.ok) {
-        set(state => ({
-          categories: state.categories.map(c => c.id === id ? { ...c, ...category } : c)
-        }));
-      }
-    } catch (error) {
-      console.error('Error updating category:', error);
-    }
+      }).catch(() => {});
+    } catch (error) {}
   },
   
   deleteCategory: async (id) => {
+    set(state => {
+      const updatedCats = state.categories.filter(c => c.id !== id);
+      const updatedProds = state.products.filter(p => p.categoryId !== id);
+      saveCategoriesToStorage(updatedCats);
+      saveProductsToStorage(updatedProds);
+      return { categories: updatedCats, products: updatedProds };
+    });
     try {
-      const res = await fetch(`/api/db/categories/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        set(state => ({
-          categories: state.categories.filter(c => c.id !== id),
-          products: state.products.filter(p => p.categoryId !== id)
-        }));
-      }
-    } catch (error) {
-      console.error('Error deleting category:', error);
-    }
+      fetch(`/api/db/categories/${id}`, { method: 'DELETE' }).catch(() => {});
+    } catch (error) {}
   },
   
   addProduct: async (product) => {
@@ -1212,19 +1208,20 @@ export const useStore = create<StoreState>((set, get) => ({
     delete payload.availableInStore;
     delete payload.availableForKiosk;
 
+    const newProd = { ...payload, description: cleanDesc };
+    set(state => {
+      const updated = [...state.products, newProd];
+      saveProductsToStorage(updated);
+      return { products: updated };
+    });
+
     try {
-      const res = await fetch('/api/db/products', {
+      fetch('/api/db/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        const saved = await res.json();
-        set(state => ({ products: [...state.products, { ...saved, ...product, description: cleanDesc }] }));
-      }
-    } catch (error) {
-      console.error('Error adding product:', error);
-    }
+      }).catch(() => {});
+    } catch (error) {}
   },
   
   updateProduct: async (id, product) => {
@@ -1246,20 +1243,19 @@ export const useStore = create<StoreState>((set, get) => ({
     delete payload.availableInStore;
     delete payload.availableForKiosk;
 
+    set(state => {
+      const updated = state.products.map(p => p.id === id ? { ...p, ...merged, description: cleanDesc } : p);
+      saveProductsToStorage(updated);
+      return { products: updated };
+    });
+
     try {
-      const res = await fetch(`/api/db/products/${id}`, {
+      fetch(`/api/db/products/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        set(state => ({
-          products: state.products.map(p => p.id === id ? { ...p, ...merged, description: cleanDesc } : p)
-        }));
-      }
-    } catch (error) {
-      console.error('Error updating product:', error);
-    }
+      }).catch(() => {});
+    } catch (error) {}
   },
   
   cleanAllProductDescriptions: async () => {
@@ -1277,16 +1273,14 @@ export const useStore = create<StoreState>((set, get) => ({
   },
 
   deleteProduct: async (id) => {
+    set(state => {
+      const updated = state.products.filter(p => p.id !== id);
+      saveProductsToStorage(updated);
+      return { products: updated };
+    });
     try {
-      const res = await fetch(`/api/db/products/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        set(state => ({
-          products: state.products.filter(p => p.id !== id)
-        }));
-      }
-    } catch (error) {
-      console.error('Error deleting product:', error);
-    }
+      fetch(`/api/db/products/${id}`, { method: 'DELETE' }).catch(() => {});
+    } catch (error) {}
   },
   
   addUser: async (user, customId) => {
