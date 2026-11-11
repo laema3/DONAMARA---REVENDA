@@ -1467,61 +1467,64 @@ export const useStore = create<StoreState>((set, get) => ({
     const newOrder: Order = {
       id,
       ...order,
-      createdAt: Date.now(),
+      createdAt: (order as any).createdAt || Date.now(),
       status: initialStatus,
       deliveryStatus: initialDeliveryStatus,
       customerName: order.customerName || (isKiosk ? 'Cliente Totem' : 'Cliente')
     };
 
-    
     let createdOrder = newOrder;
 
+    // Instantly update local state and localStorage
+    set(state => {
+      const updated = [newOrder, ...state.orders.filter(o => o.id !== newOrder.id)];
+      saveOrdersToStorage(updated);
+      return { orders: updated };
+    });
+
+    // Background sync with API (non-blocking)
     try {
-      const res = await fetch('/api/db/orders', {
+      fetch('/api/db/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newOrder)
-      });
-      
-      if (res.ok) {
-        const saved = await res.json();
-        const parsedSaved = {
-          ...saved,
-          items: typeof saved.items === 'string' ? JSON.parse(saved.items) : saved.items
-        };
-        createdOrder = parsedSaved;
-        set(state => ({ orders: [parsedSaved, ...state.orders.filter(o => o.id !== parsedSaved.id)] }));
+      }).then(async (res) => {
+        if (res.ok) {
+          const saved = await res.json();
+          if (saved && saved.id) {
+            const parsedSaved = {
+              ...saved,
+              items: typeof saved.items === 'string' ? JSON.parse(saved.items) : saved.items
+            };
+            set(state => {
+              const updated = [parsedSaved, ...state.orders.filter(o => o.id !== parsedSaved.id && o.id !== newOrder.id)];
+              saveOrdersToStorage(updated);
+              return { orders: updated };
+            });
 
-        // Auto-export to BlueFocus
-        try {
-          await get().exportOrderToBlueFocus(parsedSaved, {});
-          console.log('Pedido exportado para BlueFocus automaticamente');
-        } catch (bfError) {
-          console.error('Erro ao exportar automaticamente para BlueFocus:', bfError);
-        }
+            // Auto-export to BlueFocus
+            get().exportOrderToBlueFocus(parsedSaved, {}).catch(() => {});
 
-        // Auto-save or update customer lead record
-        // REGRA DE NEGÓCIO: Apenas clientes de delivery e consumo na loja viram leads no sistema.
-        // Pedidos feitos pelo totem NÃO viram leads.
-        const isTotemOrder = parsedSaved.type === 'kiosk';
-        if (!isTotemOrder) {
-          const custName = (parsedSaved.customerName || '').trim();
-          const custPhone = (parsedSaved.customerPhone || '').trim();
-          if (custPhone && custName && custName !== 'Cliente' && custName !== 'Cliente Totem') {
-            const isDelivery = parsedSaved.type === 'delivery' || parsedSaved.deliveryType === 'delivery';
-            get().saveCustomer({
-              name: parsedSaved.customerName,
-              phone: parsedSaved.customerPhone,
-              address: parsedSaved.deliveryAddress,
-              source: isDelivery ? 'delivery' : 'instore',
-              tags: isDelivery ? ['Cliente', 'Delivery'] : ['Cliente', 'Consumo Loja']
-            }).catch(e => console.warn('Error auto-saving customer from order:', e));
+            // Auto-save customer
+            const isTotemOrder = parsedSaved.type === 'kiosk';
+            if (!isTotemOrder) {
+              const custName = (parsedSaved.customerName || '').trim();
+              const custPhone = (parsedSaved.customerPhone || '').trim();
+              if (custPhone && custName && custName !== 'Cliente' && custName !== 'Cliente Totem') {
+                const isDelivery = parsedSaved.type === 'delivery' || parsedSaved.deliveryType === 'delivery';
+                get().saveCustomer({
+                  name: parsedSaved.customerName,
+                  phone: parsedSaved.customerPhone,
+                  address: parsedSaved.deliveryAddress,
+                  source: isDelivery ? 'delivery' : 'instore',
+                  tags: isDelivery ? ['Cliente', 'Delivery'] : ['Cliente', 'Consumo Loja']
+                }).catch(() => {});
+              }
+            }
           }
         }
-      }
-    } catch (error) {
-      console.error('Erro ao salvar pedido:', error);
-    }
+      }).catch(() => {});
+    } catch (error) {}
 
     return createdOrder;
   },
