@@ -5,6 +5,7 @@ import { useStore } from '../store/useStore';
 import { BakeryLoader } from './BakeryLoader';
 import { safeStorage } from '../utils/storage';
 import { formatAllDatesBR } from '../lib/utils';
+import { startFirestoreRealtimeSync } from '../services/cloudFirestoreApi';
 
 export function FirebaseProvider({ children }: { children: React.ReactNode }) {
   const { fetchData, fetchOrdersOnly, setIsOnline, isOnline } = useStore();
@@ -14,6 +15,7 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     console.log('FirebaseProvider mounted');
+    startFirestoreRealtimeSync();
 
     fetchData().catch((err) => {
       console.error('Initial data fetch error:', err);
@@ -278,6 +280,12 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
     };
 
     const connectSSE = () => {
+      if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+        return;
+      }
+      if (consecutiveFailuresRef.current >= 2) {
+        return;
+      }
       if (eventSource) {
         eventSource.close();
       }
@@ -376,9 +384,11 @@ export function FirebaseProvider({ children }: { children: React.ReactNode }) {
         };
         eventSource.onerror = () => {
           eventSource?.close();
-          // Try reconnecting rapidly
-          if (sseTimeout) clearTimeout(sseTimeout);
-          sseTimeout = setTimeout(connectSSE, 2000);
+          consecutiveFailuresRef.current += 1;
+          if (consecutiveFailuresRef.current < 2) {
+            if (sseTimeout) clearTimeout(sseTimeout);
+            sseTimeout = setTimeout(connectSSE, 5000);
+          }
         };
       } catch (e) {
         console.warn('SSE not supported or failed:', e);

@@ -1482,49 +1482,51 @@ export const useStore = create<StoreState>((set, get) => ({
       return { orders: updated };
     });
 
-    // Background sync with API (non-blocking)
+    // Persist to Cloud Firestore & API before returning so order is guaranteed saved across devices
     try {
-      fetch('/api/db/orders', {
+      const res = await fetch('/api/db/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newOrder)
-      }).then(async (res) => {
-        if (res.ok) {
-          const saved = await res.json();
-          if (saved && saved.id) {
-            const parsedSaved = {
-              ...saved,
-              items: typeof saved.items === 'string' ? JSON.parse(saved.items) : saved.items
-            };
-            set(state => {
-              const updated = [parsedSaved, ...state.orders.filter(o => o.id !== parsedSaved.id && o.id !== newOrder.id)];
-              saveOrdersToStorage(updated);
-              return { orders: updated };
-            });
+      });
+      if (res.ok) {
+        const saved = await res.json();
+        if (saved && saved.id) {
+          const parsedSaved = {
+            ...saved,
+            items: typeof saved.items === 'string' ? JSON.parse(saved.items) : (Array.isArray(saved.items) ? saved.items : newOrder.items)
+          };
+          createdOrder = parsedSaved;
+          set(state => {
+            const updated = [parsedSaved, ...state.orders.filter(o => o.id !== parsedSaved.id && o.id !== newOrder.id)];
+            saveOrdersToStorage(updated);
+            return { orders: updated };
+          });
 
-            // Auto-export to BlueFocus
-            get().exportOrderToBlueFocus(parsedSaved, {}).catch(() => {});
+          // Auto-export to BlueFocus
+          get().exportOrderToBlueFocus(parsedSaved, {}).catch(() => {});
 
-            // Auto-save customer
-            const isTotemOrder = parsedSaved.type === 'kiosk';
-            if (!isTotemOrder) {
-              const custName = (parsedSaved.customerName || '').trim();
-              const custPhone = (parsedSaved.customerPhone || '').trim();
-              if (custPhone && custName && custName !== 'Cliente' && custName !== 'Cliente Totem') {
-                const isDelivery = parsedSaved.type === 'delivery' || parsedSaved.deliveryType === 'delivery';
-                get().saveCustomer({
-                  name: parsedSaved.customerName,
-                  phone: parsedSaved.customerPhone,
-                  address: parsedSaved.deliveryAddress,
-                  source: isDelivery ? 'delivery' : 'instore',
-                  tags: isDelivery ? ['Cliente', 'Delivery'] : ['Cliente', 'Consumo Loja']
-                }).catch(() => {});
-              }
+          // Auto-save customer
+          const isTotemOrder = parsedSaved.type === 'kiosk';
+          if (!isTotemOrder) {
+            const custName = (parsedSaved.customerName || '').trim();
+            const custPhone = (parsedSaved.customerPhone || '').trim();
+            if (custPhone && custName && custName !== 'Cliente' && custName !== 'Cliente Totem') {
+              const isDelivery = parsedSaved.type === 'delivery' || parsedSaved.deliveryType === 'delivery';
+              get().saveCustomer({
+                name: parsedSaved.customerName,
+                phone: parsedSaved.customerPhone,
+                address: parsedSaved.deliveryAddress,
+                source: isDelivery ? 'delivery' : 'instore',
+                tags: isDelivery ? ['Cliente', 'Delivery'] : ['Cliente', 'Consumo Loja']
+              }).catch(() => {});
             }
           }
         }
-      }).catch(() => {});
-    } catch (error) {}
+      }
+    } catch (error) {
+      console.warn('Order cloud sync error:', error);
+    }
 
     return createdOrder;
   },

@@ -1043,18 +1043,23 @@ export default function Menu() {
           ]);
           if (addrRes.ok) {
             const addrs = await addrRes.json();
-            setCustomerAddresses(addrs);
-            if (addrs.length > 0) {
-              const def = addrs.find((a: any) => a.isDefault) || addrs[0];
-              setDeliveryStreet(def.street);
-              setDeliveryNumber(def.number);
-              setDeliveryComplement(def.complement || '');
-              setDeliveryNeighborhood(def.neighborhood);
-              setDeliveryCep(def.cep);
-              setDeliveryReference(def.reference || '');
+            if (Array.isArray(addrs)) {
+              setCustomerAddresses(addrs);
+              if (addrs.length > 0) {
+                const def = addrs.find((a: any) => a.isDefault) || addrs[0];
+                setDeliveryStreet(def.street);
+                setDeliveryNumber(def.number);
+                setDeliveryComplement(def.complement || '');
+                setDeliveryNeighborhood(def.neighborhood);
+                setDeliveryCep(def.cep);
+                setDeliveryReference(def.reference || '');
+              }
             }
           }
-          if (ordRes.ok) setCustomerOrders(await ordRes.json());
+          if (ordRes.ok) {
+            const ords = await ordRes.json();
+            if (Array.isArray(ords)) setCustomerOrders(ords);
+          }
           if (profRes.ok) {
             const profData = await profRes.json();
             if (profData.success && profData.customer) {
@@ -1123,7 +1128,10 @@ export default function Menu() {
     let calculatedSpent = 0;
     let monthOrderCount = 0;
 
-    const allOrdersToScan = [...(orders || []), ...(customerOrders || [])];
+    const allOrdersToScan = [
+      ...(Array.isArray(orders) ? orders : []),
+      ...(Array.isArray(customerOrders) ? customerOrders : [])
+    ];
     for (const o of allOrdersToScan) {
       if (!o || !o.id || seenOrderIds.has(o.id)) continue;
       if (o.status === 'cancelled') continue;
@@ -1544,8 +1552,8 @@ export default function Menu() {
     setAuthSuccessMsg('');
     try {
       const cleanCpf = authRegCpf.replace(/\D/g, '');
-      if (cleanCpf.length < 11) {
-        setAuthError('Informe um CNPJ ou CPF válido (mínimo 11 dígitos).');
+      if (cleanCpf.length < 5) {
+        setAuthError('Informe um CNPJ ou CPF válido (mínimo 5 dígitos).');
         setAuthLoading(false);
         return;
       }
@@ -1566,9 +1574,12 @@ export default function Menu() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
+        const registeredCpf = authRegCpf;
+        setAuthIdentifier(registeredCpf);
+        setAuthPassword(autoPassword);
+        setAuthMode('login');
         setAuthSuccessMsg(
-          data.message ||
-          `Cadastro enviado com sucesso! Seu cadastro está PENDENTE de aprovação pelo Administrador. Sua senha de acesso será os 5 primeiros dígitos do seu CNPJ/CPF (${autoPassword}).`
+          `✅ Cadastro salvo no banco de dados com sucesso! Sua senha inicial (${autoPassword}) já foi preenchida abaixo. Clique em "Entrar" para acessar.`
         );
         setAuthName('');
         setAuthPhone('');
@@ -5905,8 +5916,8 @@ export default function Menu() {
           {/* MODO NOVO CADASTRO (FICA PENDENTE ATÉ APROVAÇÃO DO ADMIN) */}
           {authMode === 'register' && (
             <form onSubmit={handleCustomerRegister} className="space-y-3.5 text-left">
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-[11px] text-amber-900 font-medium leading-relaxed">
-                🔒 <strong>Atenção:</strong> Após o envio, seu cadastro ficará <strong>Pendente</strong> até que o Administrador aprove seu acesso.
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-[11px] text-emerald-900 font-medium leading-relaxed">
+                ✅ <strong>Cadastro Liberado na Hora:</strong> Preencha seus dados abaixo para criar sua conta no banco de dados e acessar imediatamente.
               </div>
 
               <div>
@@ -8919,8 +8930,8 @@ export default function Menu() {
 
             {authMode === 'register' && (
               <form onSubmit={handleCustomerRegister} className="space-y-3.5">
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 font-medium">
-                  🔒 Seu cadastro ficará <strong>Pendente</strong> até aprovação do Administrador.
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 font-medium">
+                  ✅ Seu cadastro é <strong>aprovado automaticamente</strong> e salvo no banco de dados em nuvem.
                 </div>
 
                 <div>

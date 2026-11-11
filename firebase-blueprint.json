@@ -1,82 +1,148 @@
 {
   "entities": {
-    "User": {
-      "title": "User",
-      "description": "System users (Admin/Operator)",
+    "StoreInfo": {
+      "title": "StoreInfo",
+      "description": "DONAMARA store configuration and branding",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Full name" },
-        "email": { "type": "string", "format": "email", "description": "Email address" },
-        "role": { "type": "string", "enum": ["admin", "operator"], "description": "User role" }
+        "name": { "type": "string", "description": "Store name" },
+        "themeColor": { "type": "string", "description": "Primary theme color" },
+        "iconColor": { "type": "string", "description": "Icon color" },
+        "headerPhrase": { "type": "string", "description": "Header phrase" },
+        "logoUrl": { "type": "string", "description": "Logo image URL" },
+        "address": { "type": "string", "description": "Store address" },
+        "hours": { "type": "string", "description": "Opening hours" },
+        "instagram": { "type": "string", "description": "Instagram handle" },
+        "whatsapp": { "type": "string", "description": "WhatsApp number" }
       },
-      "required": ["name", "email", "role"]
+      "required": ["name"]
     },
     "Category": {
       "title": "Category",
       "description": "Product categories",
       "type": "object",
       "properties": {
+        "id": { "type": "string", "description": "Category ID" },
         "name": { "type": "string", "description": "Category name" },
-        "order": { "type": "integer", "description": "Display order" }
+        "order": { "type": "number", "description": "Display order" }
       },
       "required": ["name", "order"]
     },
     "Product": {
       "title": "Product",
-      "description": "Bakery products",
+      "description": "Store products",
       "type": "object",
       "properties": {
+        "id": { "type": "string", "description": "Product ID" },
         "categoryId": { "type": "string", "description": "ID of the category" },
         "name": { "type": "string", "description": "Product name" },
         "description": { "type": "string", "description": "Product description" },
         "price": { "type": "number", "description": "Product price" },
-        "imageUrl": { "type": "string", "format": "uri", "description": "Product image URL" },
-        "isActive": { "type": "boolean", "description": "Whether the product is active" },
-        "isAddon": { "type": "boolean", "description": "Whether the product is an addon" },
-        "isFlavor": { "type": "boolean", "description": "Whether the product is a flavor" },
-        "addonIds": { "type": "array", "items": { "type": "string" }, "description": "IDs of allowed addons" }
+        "imageUrl": { "type": "string", "description": "Product image URL" },
+        "isActive": { "type": "boolean", "description": "Whether the product is active" }
       },
-      "required": ["categoryId", "name", "price", "isActive"]
+      "required": ["categoryId", "name", "price"]
     },
     "Order": {
       "title": "Order",
       "description": "Customer orders",
       "type": "object",
       "properties": {
-        "items": { "type": "string", "description": "JSON stringified order items" },
+        "id": { "type": "string", "description": "Order ID" },
         "total": { "type": "number", "description": "Total order amount" },
-        "status": { "type": "string", "enum": ["pending", "preparing", "ready", "completed", "cancelled"], "description": "Order status" },
-        "createdAt": { "type": "integer", "description": "Timestamp of order creation" },
-        "type": { "type": "string", "enum": ["kiosk", "delivery", "online"], "description": "Order type" },
+        "status": { "type": "string", "description": "Order status" },
+        "createdAt": { "type": "number", "description": "Timestamp of order creation" },
+        "type": { "type": "string", "description": "Order type" },
         "paymentMethod": { "type": "string", "description": "Payment method used" },
         "customerName": { "type": "string", "description": "Name of the customer" },
         "customerPhone": { "type": "string", "description": "WhatsApp/Phone of the customer" }
       },
-      "required": ["items", "total", "status", "createdAt", "type", "paymentMethod"]
+      "required": ["id", "total", "status", "createdAt"]
     },
-    "StoreInfo": {
-      "title": "StoreInfo",
-      "description": "Bakery configuration and branding",
+    "Customer": {
+      "title": "Customer",
+      "description": "Registered B2B/B2C customers",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Bakery name" },
-        "themeColor": { "type": "string", "description": "Primary theme color" },
-        "iconColor": { "type": "string", "description": "Icon color" },
-        "headerPhrase": { "type": "string", "description": "Header phrase" },
-        "logoUrl": { "type": "string", "format": "uri", "description": "Logo image URL" },
-        "address": { "type": "string", "description": "Bakery address" },
-        "hours": { "type": "string", "description": "Opening hours" },
-        "instagram": { "type": "string", "description": "Instagram handle" },
-        "whatsapp": { "type": "string", "description": "WhatsApp number" }
+        "id": { "type": "string", "description": "Customer ID" },
+        "name": { "type": "string", "description": "Customer or company name" },
+        "cpf": { "type": "string", "description": "CPF or CNPJ" },
+        "phone": { "type": "string", "description": "Phone/WhatsApp" },
+        "email": { "type": "string", "description": "Email address" },
+        "password": { "type": "string", "description": "Access password" },
+        "status": { "type": "string", "description": "Approval status" }
       },
-      "required": ["name", "themeColor", "iconColor", "headerPhrase", "logoUrl", "address", "hours", "instagram", "whatsapp"]
+      "required": ["id", "name", "cpf"]
+    },
+    "CustomerAddress": {
+      "title": "CustomerAddress",
+      "description": "Customer delivery addresses",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Address ID" },
+        "customerId": { "type": "string", "description": "Owner customer ID" },
+        "street": { "type": "string", "description": "Street name" },
+        "number": { "type": "string", "description": "Street number" },
+        "neighborhood": { "type": "string", "description": "Neighborhood" },
+        "cep": { "type": "string", "description": "Postal code" }
+      },
+      "required": ["id", "customerId"]
+    },
+    "User": {
+      "title": "User",
+      "description": "System users (Admin/Operator)",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "description": "Email address" },
+        "role": { "type": "string", "description": "User role" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "Driver": {
+      "title": "Driver",
+      "description": "Delivery drivers (Motoboys)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Driver ID" },
+        "name": { "type": "string", "description": "Driver name" },
+        "phone": { "type": "string", "description": "Driver phone" }
+      },
+      "required": ["id", "name"]
+    },
+    "DeliveryZone": {
+      "title": "DeliveryZone",
+      "description": "Delivery zones and fees",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Zone ID" },
+        "neighborhood": { "type": "string", "description": "Neighborhood name" },
+        "fee": { "type": "number", "description": "Delivery fee" }
+      },
+      "required": ["id", "neighborhood", "fee"]
+    },
+    "DiningTable": {
+      "title": "DiningTable",
+      "description": "In-store dining tables",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Table ID" },
+        "number": { "type": "number", "description": "Table number" },
+        "name": { "type": "string", "description": "Table label" }
+      },
+      "required": ["id", "number"]
     }
   },
   "firestore": {
-    "/users/{userId}": { "schema": "User", "description": "System users" },
-    "/categories/{categoryId}": { "schema": "Category", "description": "Product categories" },
-    "/products/{productId}": { "schema": "Product", "description": "Bakery products" },
-    "/orders/{orderId}": { "schema": "Order", "description": "Customer orders" },
-    "/storeInfo/main": { "schema": "StoreInfo", "description": "Store configuration" }
+    "/dm_store_info/{docId}": { "schema": "StoreInfo", "description": "Store configuration" },
+    "/dm_categories/{docId}": { "schema": "Category", "description": "Product categories" },
+    "/dm_products/{docId}": { "schema": "Product", "description": "Store products" },
+    "/dm_orders/{docId}": { "schema": "Order", "description": "Customer orders" },
+    "/dm_customers/{docId}": { "schema": "Customer", "description": "Registered customers" },
+    "/dm_addresses/{docId}": { "schema": "CustomerAddress", "description": "Customer addresses" },
+    "/dm_users/{docId}": { "schema": "User", "description": "System users" },
+    "/dm_drivers/{docId}": { "schema": "Driver", "description": "Delivery drivers" },
+    "/dm_delivery_zones/{docId}": { "schema": "DeliveryZone", "description": "Delivery zones" },
+    "/dm_tables/{docId}": { "schema": "DiningTable", "description": "Dining tables" }
   }
 }
