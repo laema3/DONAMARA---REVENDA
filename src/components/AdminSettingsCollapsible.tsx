@@ -614,7 +614,7 @@ export function AdminSettingsCollapsible(props: AdminSettingsCollapsibleProps) {
         </div>
       </div>
 
-      <form onSubmit={handleSaveSettings} className="space-y-3.5">
+      <form onSubmit={handleSaveSettings} className="space-y-3.5" noValidate>
         {/* 1. Informações Gerais */}
         <div className="bg-white rounded-2xl shadow-xs border border-stone-200 overflow-hidden transition-all">
           <button
@@ -657,23 +657,23 @@ export function AdminSettingsCollapsible(props: AdminSettingsCollapsibleProps) {
               </div>
               <div>
                 <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Frase de Destaque (Hero)</label>
-                <input type="text" name="headerPhrase" defaultValue={storeInfo.headerPhrase} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
+                <input type="text" name="headerPhrase" defaultValue={storeInfo.headerPhrase} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-stone-700 uppercase mb-1">WhatsApp</label>
-                <input type="text" name="whatsapp" defaultValue={storeInfo.whatsapp} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
+                <input type="text" name="whatsapp" defaultValue={storeInfo.whatsapp} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
               </div>
               <div>
                 <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Instagram</label>
-                <input type="text" name="instagram" defaultValue={storeInfo.instagram} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
+                <input type="text" name="instagram" defaultValue={storeInfo.instagram} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Endereço Completo</label>
-                <input type="text" name="address" defaultValue={storeInfo.address} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
+                <input type="text" name="address" defaultValue={storeInfo.address} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-bold text-stone-700 uppercase mb-1">Horário de Funcionamento (Texto)</label>
-                <textarea name="hours" defaultValue={storeInfo.hours} required rows={2} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
+                <textarea name="hours" defaultValue={storeInfo.hours} rows={2} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none text-sm" />
               </div>
             </div>
           </div>
