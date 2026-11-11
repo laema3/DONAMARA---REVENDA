@@ -6404,23 +6404,23 @@ export default function Admin() {
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-1">Frase de Destaque (Hero)</label>
-              <input type="text" name="headerPhrase" defaultValue={storeInfo.headerPhrase} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
+              <input type="text" name="headerPhrase" defaultValue={storeInfo.headerPhrase} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-1">WhatsApp</label>
-              <input type="text" name="whatsapp" defaultValue={storeInfo.whatsapp} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
+              <input type="text" name="whatsapp" defaultValue={storeInfo.whatsapp} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
             </div>
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-1">Instagram</label>
-              <input type="text" name="instagram" defaultValue={storeInfo.instagram} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
+              <input type="text" name="instagram" defaultValue={storeInfo.instagram} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-stone-700 mb-1">Endereço Completo</label>
-              <input type="text" name="address" defaultValue={storeInfo.address} required className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
+              <input type="text" name="address" defaultValue={storeInfo.address} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-stone-700 mb-1">Horário de Funcionamento</label>
-              <textarea name="hours" defaultValue={storeInfo.hours} required rows={3} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
+              <textarea name="hours" defaultValue={storeInfo.hours} rows={3} className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none" />
             </div>
           </div>
 
