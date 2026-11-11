@@ -6396,7 +6396,7 @@ export default function Admin() {
         <h3 className="text-lg font-bold text-stone-800 mb-6 flex items-center gap-2">
           <Settings className="w-5 h-5 text-orange-600" /> Informações Gerais
         </h3>
-        <form onSubmit={handleSaveSettings} className="space-y-6">
+        <form onSubmit={handleSaveSettings} className="space-y-6" noValidate>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-stone-700 mb-1">Nome da Loja</label>
